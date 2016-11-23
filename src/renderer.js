@@ -15,8 +15,10 @@
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var _ = require('lodash');
-var d3 = require('d3');
+
+import d3 from 'd3';
+import _ from 'lodash';
+
 export class Renderer {
   constructor(svg, config) {
     var defaultConfig = {
@@ -286,7 +288,6 @@ export class Renderer {
         },
         'stroke': 'Red',
         'stroke-width': 1,
-        'fill': '#b6e2ff'
       }).on('mouseover', function (d) {
         d.oldColor = d3.rgb(d3.select(this).style('fill'));
         d3.select(this).style('fill', d.oldColor.brighter(0.25));

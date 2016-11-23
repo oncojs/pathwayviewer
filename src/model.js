@@ -15,8 +15,9 @@
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var $ = require('jquery');
-var _ = require('lodash');
+import $ from 'jquery';
+import _ from 'lodash';
+
 export class PathwayModel {
   constructor() {
     this.nodes = [];
