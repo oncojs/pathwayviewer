@@ -26,7 +26,7 @@ export class ReactomePathway {
     var _defaultConfig = {
       width: 500,
       height: 500,
-      onClick: {},
+      onNodeClick: {},
       urlPath: '',
       strokeColor: 'black',
       mutationHighlightColor: '#9b315b',
@@ -34,10 +34,11 @@ export class ReactomePathway {
       overlapColor: '#000000',
       subPathwayColor: 'blue',
       initScaleFactor: 0.90,
-      container: '#test'
+      //container: '#test'
     };
 
-    this.config = config || _defaultConfig;
+    this.config = _.assign({}, _defaultConfig, config);
+    //console.log(this.config);
     this.rendererUtils = new RendererUtils();
     this.model = null;
   }
@@ -86,7 +87,7 @@ export class ReactomePathway {
     var zoom = d3.behavior.zoom().scaleExtent([scaleFactor*0.9, scaleFactor*17]);
 
     var svg = d3.select(config.container).append('svg')
-      .attr('class', 'pathwaysvg pathway-no-scroll')
+      .attr('class', 'pathwaysvg')
       .attr('viewBox', '0 0 ' + config.width + ' ' + config.height)
       .attr('preserveAspectRatio', 'xMidYMid')
       .append('g')
@@ -141,7 +142,8 @@ export class ReactomePathway {
     this.renderer = new Renderer(svg, {
       onClick: function (d) {
         d.isPartOfPathway = (nodesInPathway.length<=0 || nodesInPathway.indexOf(d.reactomeId) >= 0);
-        config.onClick(d);
+        
+        config.onNodeClick(d3.event, d, this);
       },
       urlPath: config.urlPath,
       strokeColor: config.strokeColor,
@@ -203,21 +205,22 @@ export class ReactomePathway {
 
     this.nodesInPathway = nodesInPathway;
   }
-}
+
   /*
   * Renders a legend svg in pathway-legend div given a width and height
   * Assumes the existance of a div with the class 'pathway-legend-svg'.
   *
   * On the other hand, if it already rendered it, it will simply set the opacity
   * of this div to 1.
-  
-  renderLegend(w,h) {
-    d3.select('.pathway-legend-svg').remove();
+  */
+  getLegend(w,h) {
+    //d3.select('.pathway-legend-svg').remove();
     var config =  this.config;
     var rendererUtils = this.rendererUtils;
 
-    var legendSvg = d3.select('.pathway-legend-content').append('svg')
-      .attr('class','pathway-legend-svg')
+    var legendSvgElement = document.createElementNS(d3.ns.prefix.svg, 'svg'); 
+    var legendSvg = d3.select(legendSvgElement)
+      //.attr('class','pathway-legend-svg')
       .attr('viewBox', '0 0 ' +w+ ' ' + h)
       .attr('preserveAspectRatio', 'xMidYMid')
       .append('g');
@@ -247,6 +250,8 @@ export class ReactomePathway {
     );
 
     legendSvg.selectAll('.reaction-failed-example').classed('failed-reaction',true);
+
+    return legendSvgElement;
   }
 
   /*
@@ -255,7 +260,7 @@ export class ReactomePathway {
   *
   *  and transforms and renders with the form:
   *  [{id:123, value:10},{id:124, value:10},...]
-  
+  */
   highlight(rawMutationHighlights, rawDrugHighlights, overlaps) {
     var nodesInPathway = this.nodesInPathway;
 
@@ -305,4 +310,3 @@ export class ReactomePathway {
     }
   }
 }
-*/

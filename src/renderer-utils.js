@@ -17,7 +17,8 @@
 
 'use strict';
 
-var _ = require('lodash');
+import _ from 'lodash';
+
 export class RendererUtils {
   /*
   * Create an array of reaction labels for every reaction based on its type
@@ -271,7 +272,7 @@ export class RendererUtils {
       svg.append('foreignObject').attr({
         x: marginLeft+100,
         y: y - 15,
-        width:100,
+        width:200,
         height:35,
         'fill':'none'
       }).append('xhtml:body')
@@ -285,7 +286,7 @@ export class RendererUtils {
       svg.append('foreignObject').attr({
         x: 5,
         y: y - 22,
-        width:275,
+        width:350,
         height:35,
         'fill':'none'
       }).append('xhtml:body')
@@ -324,7 +325,7 @@ export class RendererUtils {
       svg.append('foreignObject').attr({
         x: marginLeft + 80,
         y: y - 15,
-          width:105,
+          width:205,
           height:30,
           'fill':'none'
       }).append('xhtml:body')
@@ -352,7 +353,7 @@ export class RendererUtils {
       svg.append('foreignObject').attr({
         x: marginLeft+80,
         y: y - 15,
-        width: 110,
+        width: 160,
         height: 30,
         'fill':'none'
       }).append('xhtml:body')
