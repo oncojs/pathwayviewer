@@ -19,6 +19,7 @@ import {PathwayModel} from './model.js';
 import {Renderer} from './renderer.js';
 import {RendererUtils} from './renderer-utils.js';
 import d3 from 'd3';
+import invariant from 'invariant';
 import _ from 'lodash';
 
 export class ReactomePathway {
@@ -27,22 +28,29 @@ export class ReactomePathway {
       width: 500,
       height: 500,
       onNodeClick: {},
-      urlPath: '',
       strokeColor: 'black',
       mutationHighlightColor: '#9b315b',
       drugHighlightColor: 'navy',
       overlapColor: '#000000',
       subPathwayColor: 'blue',
       initScaleFactor: 0.90,
-      //container: '#test'
     };
 
-    this.config = _.assign({}, _defaultConfig, config);
-    //console.log(this.config);
+    this.config = _.defaultsDeep({}, config, _defaultConfig);
+    invariant(containerNodeOrIdSpecified(this.config), "Either 'containerNode' or 'containerId' must be specified");
+    
     this.rendererUtils = new RendererUtils();
-    this.model = null;
+    this.model = new PathwayModel();
+
+    function containerNodeOrIdSpecified(config) {
+      return (config.containerNode || config.containerId) && !(config.containerNode && config.containerId);
+    }
   }
 
+  getPathwayModel() {
+    return this.model;
+  }
+  
   /*
   * Takes in an xml of the pathway diagram and a list of reactions to zoom in
   * on and highlight. The color of the reactions is set with config.subPathwayColor
@@ -52,9 +60,9 @@ export class ReactomePathway {
     var config = this.config;
     var nodesInPathway = [];
     
-    this.model = new PathwayModel();
     var model = this.model;
     model.parse(xml);
+    console.log(model.getReactions());
 
     var getBoundingBox = function(nodes,box){
       nodes.forEach(function (node) {
@@ -86,7 +94,7 @@ export class ReactomePathway {
     // Set the zoom extents based on scale factor
     var zoom = d3.behavior.zoom().scaleExtent([scaleFactor*0.9, scaleFactor*17]);
 
-    var svg = d3.select(config.container).append('svg')
+    var svg = d3.select(config.containerId || config.containerNode).append('svg')
       .attr('class', 'pathwaysvg')
       .attr('viewBox', '0 0 ' + config.width + ' ' + config.height)
       .attr('preserveAspectRatio', 'xMidYMid')
@@ -145,7 +153,6 @@ export class ReactomePathway {
         
         config.onNodeClick(d3.event, d, this);
       },
-      urlPath: config.urlPath,
       strokeColor: config.strokeColor,
       mutationHighlightColor: config.mutationHighlightColor,
       drugHighlightColor: config.drugHighlightColor,
