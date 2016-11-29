@@ -15,8 +15,9 @@
   },
   "dependencies": {
     "budo": "^9.2.1",
-    "lodash": "^3.10.1",
-    "jquery": "2.1.2"
+    "deep-freeze": "0.0.1",
+    "jquery": "2.1.2",
+    "lodash": "^3.10.1"
   },
   "main": "dist/pathwayviewer.js",
   "scripts": {
