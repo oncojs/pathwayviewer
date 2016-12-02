@@ -17,15 +17,18 @@
 
 import $ from 'jquery';
 import _ from 'lodash';
+import deepFreeze from 'deep-freeze';
 
 export class PathwayModel {
-  constructor() {
+  constructor(xml) {
     this.nodes = [];
     this.reactions = [];
     this.inks = [];
+
+    this.parse(xml);
+    //deepFreeze(this);
   }
   
-
   parse(xml) {
     var parsedXml =  $($.parseXML(xml));
 

@@ -27,43 +27,38 @@ export class ReactomePathway {
     var _defaultConfig = {
       width: 500,
       height: 500,
-      onNodeClick: {},
-      strokeColor: 'black',
-      mutationHighlightColor: '#9b315b',
-      drugHighlightColor: 'navy',
-      overlapColor: '#000000',
-      subPathwayColor: 'blue',
+      onNodeClick: _.noop,
+      colors: {  
+        stroke: 'black',
+        mutationHighlight: '#9b315b',
+        drugHighlight: 'navy',
+        overlap: '#000000',
+        subPathway: 'blue',
+      },
       initScaleFactor: 0.90,
     };
 
     this.config = _.defaultsDeep({}, config, _defaultConfig);
-    invariant(containerNodeOrIdSpecified(this.config), "Either 'containerNode' or 'containerId' must be specified");
+
+    this.containerNode = config.containerNode;
+    invariant(this.containerNode, "'containerNode' (a DOM node object) is required");
+    this.model = config.model;
+    invariant(this.model, "'model' (a PathwayModel object is required");
     
     this.rendererUtils = new RendererUtils();
-    this.model = new PathwayModel();
-
-    function containerNodeOrIdSpecified(config) {
-      return (config.containerNode || config.containerId) && !(config.containerNode && config.containerId);
-    }
-  }
-
-  getPathwayModel() {
-    return this.model;
   }
   
   /*
-  * Takes in an xml of the pathway diagram and a list of reactions to zoom in
-  * on and highlight. The color of the reactions is set with config.subPathwayColor
+  * Takes an optional list of reactions to zoom in * on and highlight.
+  * The color of the reactions is set with config.subPathwayColor
   *
   */
-  render(xml, zoomedOnElements) {
+  render(zoomedOnElements) {
     var config = this.config;
     var nodesInPathway = [];
     
     var model = this.model;
-    model.parse(xml);
-    console.log(model.getReactions());
-
+    
     var getBoundingBox = function(nodes,box){
       nodes.forEach(function (node) {
         box.height = Math.max(node.position.y + node.size.height, box.height);
@@ -94,7 +89,7 @@ export class ReactomePathway {
     // Set the zoom extents based on scale factor
     var zoom = d3.behavior.zoom().scaleExtent([scaleFactor*0.9, scaleFactor*17]);
 
-    var svg = d3.select(config.containerId || config.containerNode).append('svg')
+    var svg = d3.select(config.containerNode).append('svg')
       .attr('class', 'pathwaysvg')
       .attr('viewBox', '0 0 ' + config.width + ' ' + config.height)
       .attr('preserveAspectRatio', 'xMidYMid')
@@ -148,16 +143,10 @@ export class ReactomePathway {
 
     // Render everything
     this.renderer = new Renderer(svg, {
-      onClick: function (d) {
-        d.isPartOfPathway = (nodesInPathway.length<=0 || nodesInPathway.indexOf(d.reactomeId) >= 0);
-        
+      onClick: function (d) {     
         config.onNodeClick(d3.event, d, this);
       },
-      strokeColor: config.strokeColor,
-      mutationHighlightColor: config.mutationHighlightColor,
-      drugHighlightColor: config.drugHighlightColor,
-      overlapColor: config.overlapColor,
-      subPathwayColor: config.subPathwayColor
+      colors: config.colors,
     });
 
     this.renderer.renderCompartments(_.where(model.getNodes(),{type:'RenderableCompartment', hasClass:true}));
@@ -214,13 +203,10 @@ export class ReactomePathway {
   }
 
   /*
-  * Renders a legend svg in pathway-legend div given a width and height
-  * Assumes the existance of a div with the class 'pathway-legend-svg'.
+  * Returns legend svg given a width and height
   *
-  * On the other hand, if it already rendered it, it will simply set the opacity
-  * of this div to 1.
   */
-  getLegend(w,h) {
+  getLegendSVG(w,h) {
     //d3.select('.pathway-legend-svg').remove();
     var config =  this.config;
     var rendererUtils = this.rendererUtils;
