@@ -1,5 +1,3 @@
-/*jshint esversion: 6 */
-
 import {ReactomePathway} from '../src/reactome-pathway.js';
 import {PathwayModel} from '../src/model.js';
 import d3 from 'd3';
@@ -21,23 +19,19 @@ function readTextFile(file)
         {
             if(rawFile.status === 200 || rawFile.status === 0)
             {
-                var allText = rawFile.responseText;
-                var pathwayModel = new PathwayModel();
-                
-                pathwayModel.parse(allText);
-
                 var div = document.createElement("div");
-                div.setAttribute("id", "test");
                 document.body.appendChild(div);
 
                 var config = {
-                    container: '#test',
+                    containerNode: div,
                     onNodeClick: (d3Event, node, svg) => {
                         console.log(svg);
-                    }
+                        console.log(node);
+                    },
+                    model: new PathwayModel(rawFile.responseText),
                 };
                 var reactomePathway = new ReactomePathway(config);
-                reactomePathway.render(allText, []);
+                reactomePathway.render([]);
                 //var legendSvg = reactomePathway.getLegend(370, 671);
                 //console.log(legendSvg);
                 //document.body.appendChild(legendSvg);
@@ -46,4 +40,4 @@ function readTextFile(file)
     };
     rawFile.send(null);
 }
-readTextFile("../test/egfr.xml");
+readTextFile("../test/egfr-disease.xml");

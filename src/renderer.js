@@ -22,22 +22,28 @@ import _ from 'lodash';
 export class Renderer {
   constructor(svg, config) {
     var defaultConfig = {
-      onClick:{},
+      onClick: _.noop,
+      colors: { 
+        stroke: '#696969',
+        mutationHighlight: '#9b315b',
+        drugHighlight: 'navy',
+        overlap : '#000000',
+        subPathway: 'blue',
+      },
       urlPath: '',
-      strokeColor: '#696969',
-      mutationHighlightColor: '#9b315b',
-      drugHighlightColor: 'navy',
-      overlapColor : '#000000',
-      subPathwayColor: 'navy'
     };
 
     this.svg = svg;
-    this.config = config || defaultConfig;
-    this.defineDefs(svg,config);
+    this.config = _.defaultsDeep({}, config, defaultConfig);
+    this.colors = this.config.colors;
+    this.urlPath = this.config.urlPath;
+    
+    this.modelObjectToSVG = new WeakMap();
+    this.defineDefs(this.svg, this.colors);
   }
 
-  defineDefs(svg, config){
-    var strokeColor =  config.strokeColor;
+  defineDefs(svg, colors){
+    var strokeColor =  colors.stroke;
     var markers = [
       'Output','Activator','ProcessNode','RenderableInteraction','GeneArrow','Catalyst',
       'Catalyst-legend','Activator-legend','Output-legend','Inhibitor','Inhibitor-legend'
@@ -168,7 +174,7 @@ export class Renderer {
         .style('fill',filled(elem)?color:'white');
 
       if(isBaseMarker(elem)){
-        color = config.subPathwayColor;
+        color = colors.subPathwayColor;
 
         defs.append('svg:marker')
           .attr({
@@ -186,6 +192,10 @@ export class Renderer {
     });
   }
 
+  getSVGForModelObject(modelObject) {
+    this.modelObjectToSVG.get(modelObject);
+  }
+
   /*
   * Constants used to specify the highlight treatment of a gene.
   * */
@@ -197,7 +207,7 @@ export class Renderer {
   renderCompartments(compartments) {
     this.svg.selectAll('.RenderableCompartment').data(compartments).enter().append('rect').attr({
       'class': function(d) {
-        return d.type + ' compartment'+d.reactomeId;
+        return 'node ' + d.type + ' compartment'+d.reactomeId;
       },
       'x': function(d) {return d.position.x;},
       'y': function(d) {return d.position.y;},
@@ -208,7 +218,7 @@ export class Renderer {
     });
 
     this.svg.selectAll('.RenderableCompartmentText').data(compartments).enter().append('foreignObject').attr({
-      'class': function(d) {return d.type+'Text RenderableCompartmentText';},
+      'class': function(d) {return 'node ' + d.type+'Text RenderableCompartmentText';},
       'x': function(d) {return d.text.position.x;},
       'y': function(d) {return d.text.position.y;},
       'width': function(d) {return d.size.width;},
@@ -227,7 +237,7 @@ export class Renderer {
   * Render all the nodes and their text
   */
   renderNodes(nodes) {
-    var svg = this.svg, config = this.config;
+    var svg = this.svg;
     // Split into normal rectangles and octagons based on node type
     var octs = _.filter(nodes,function(n) {return n.type === 'RenderableComplex';});
     var rects = _.filter(nodes,function(n) {return n.type !== 'RenderableComplex';});
@@ -275,10 +285,10 @@ export class Renderer {
     // Render all complexes as octagons
     svg.selectAll('.RenderableOct').data(octs).enter().append('polygon')
       .attr({
-        'class': function(d) {return 'pathway-node RenderableOct RenderableComplex entity'+d.id;},
+        'class': function(d) {return 'node pathway-node RenderableOct RenderableComplex entity'+d.id;},
         'filter': function(d) {
           if (d.grayed) {
-            return (typeof config.urlPath==='undefined') ? '' : 'url(\''+config.urlPath+'#grayscale\')';
+            return (typeof this.urlPath==='undefined') ? '' : 'url(\''+ this.urlPath+'#grayscale\')';
           } else {
             return '';
           }
@@ -288,19 +298,27 @@ export class Renderer {
         },
         'stroke': 'Red',
         'stroke-width': 1,
+        'entity-id': d => d.id,
       }).on('mouseover', function (d) {
-        d.oldColor = d3.rgb(d3.select(this).style('fill'));
-        d3.select(this).style('fill', d.oldColor.brighter(0.25));
+        var rect  = d3.select(this);
+        var oldFill = d3.rgb(rect.style('fill'));
+        
+        rect.attr('oldFill', oldFill);
+        rect.style('fill', oldFill.brighter(0.25));
       }).on('mouseout', function (d) {
-        d3.select(this).style('fill', d.oldColor);
-      }).on('click',config.onClick);
+        var rect = d3.select(this);
+        
+        rect.style('fill', rect.attr('oldFill'));
+        rect.attr('oldFill', null)
+      }).on('click', this.config.onClick);
 
-      // Render all other normal rectangular nodes after octagons
-      svg.selectAll('.RenderableRect').data(rects).enter().append('rect').attr({
-        'class': function (d) {return 'pathway-node RenderableRect ' + d.type + ' entity'+d.id;},
+    // Render all other normal rectangular nodes after octagons
+    svg.selectAll('.RenderableRect').data(rects).enter().append('rect')
+      .attr({
+        'class': function (d) {return 'node pathway-node RenderableRect ' + d.type + ' entity'+d.id;},
         'filter': function (d) {
           if (d.grayed) {
-            return (typeof config.urlPath==='undefined') ? '' : 'url(\''+config.urlPath+'#grayscale\')';
+            return (typeof this.urlPath==='undefined') ? '' : 'url(\''+this.urlPath+'#grayscale\')';
           } else {
             return '';
           }
@@ -346,22 +364,30 @@ export class Renderer {
         },
         'pointer-events':function(d) {return d.type==='RenderableGene'?'none':'';}
       }).on('mouseover', function (d) {
-        d.oldColor = d3.rgb(d3.select(this).style('fill'));
-        d3.select(this).style('fill', d.oldColor.brighter(0.25));
+        var rect  = d3.select(this);
+        var oldFill = d3.rgb(rect.style('fill'));
+        
+        rect.attr('oldFill', oldFill);
+        rect.style('fill', oldFill.brighter(0.25));
       }).on('mouseout', function (d) {
-        d3.select(this).style('fill', d.oldColor);
-      }).on('click',config.onClick);
+        var rect = d3.select(this);
+        
+        rect.style('fill', rect.attr('oldFill'));
+        rect.attr('oldFill', null)
+      }).on('click',this.config.onClick);
 
-      svg.selectAll('.crossed').data(crossed).enter().append('polyline').attr({
-        'class': 'CrossedNode',
+      svg.selectAll('.crossed').data(crossed).enter()
+      .append('polyline').attr({
+        'class': 'node CrossedNode',
         'fill': 'none',
         'stroke': 'red',
         'stroke-width': '2',
         'points': function(d) {return getCrossMap(+d.position.x, +d.position.y, +d.size.width, +d.size.height);}
       });
 
-      svg.selectAll('.crossed').data(crossed).enter().append('polyline').attr({
-        'class': 'CrossedNode',
+      svg.selectAll('.crossed').data(crossed).enter()
+      .append('polyline').attr({
+        'class': 'node CrossedNode',
         'fill': 'none',
         'stroke': 'red',
         'stroke-width': '2',
@@ -370,7 +396,7 @@ export class Renderer {
         }
       });
 
-      // Add a foreignObject to contain all text so that warpping is done for us
+      // Add a foreignObject to contain all text so that wrapping is done for us
       svg.selectAll('.RenderableText').data(nodes).enter().append('foreignObject').attr({
         'class':function(d){return d.type+'Text RenderableText';},
         'x':function(d){return d.position.x;},
@@ -400,24 +426,33 @@ export class Renderer {
         }
       );
 
-      // if it's a gene, we have to add a sepcial array in the top right corner
+      // if it's a gene, we have to add a special array in the top right corner
       var genes =  _.where(nodes,{type : 'RenderableGene'});
 
       svg.selectAll('.RenderableGeneArrow').data(genes).enter().append('line').attr({
-        'class':'RenderableGeneArrow',
+        'class':'node RenderableGeneArrow',
         'x1':function(d){return (+d.position.x)+(+d.size.width) - 0.5;},
         'y1':function(d){return (+d.position.y) +1;},
         'x2':function(d){return (+d.position.x)+(+d.size.width)  + 5.5;},
         'y2':function(d){return (+d.position.y) + 1;},
       }).attr('stroke','black')
-        .attr('marker-end','url("' + config.urlPath + '#GeneArrow")');
+        .attr('marker-end','url("' + this.urlPath + '#GeneArrow")');
+
+      var modelObjectToSVG = this.modelObjectToSVG;
+      svg.selectAll('.node').each(
+        function(d) {
+          modelObjectToSVG.set(d, this);
+        }
+      );
+      console.log(this.modelObjectToSVG);
   }
 
   /*
   * Renders all connecting edges and their arrow heads where appropriate
   */
   renderEdges(edges) {
-    var svg = this.svg, config = this.config;
+    var svg = this.svg;  
+    var colors = this.colors;
 
     // In the odd case that there are layers of the same node/reaction, order things so that the
     // edges with markers (arrow heads, etc.) are on top.
@@ -436,7 +471,7 @@ export class Renderer {
       },
       'filter': function(d) {
         if (d.grayed || d.overlapping) {
-          return (typeof config.urlPath==='undefined') ? '' : 'url(\''+config.urlPath+'#grayscale\')';
+          return (typeof this.urlPath==='undefined') ? '' : 'url(\''+ this.urlPath+'#grayscale\')';
         } else {
           return '';
         }
@@ -445,15 +480,15 @@ export class Renderer {
       'y1':function(d) {return d.y1;},
       'x2':function(d) {return d.x2;},
       'y2':function(d) {return d.y2;},
-      'stroke': config.strokeColor
+      'stroke': colors.stroke
     }).attr({
         'marker-start':function(d) {
           return d.marked && isStartMarker(d.marker) && !isLink(d.type)?
-          'url("' + config.urlPath + '#' + d.marker + '")' : '';
+          'url("' + this.urlPath + '#' + d.marker + '")' : '';
         },
         'marker-end':function(d) {
           return d.marked && !isStartMarker(d.marker) && !isLink(d.type)?
-          'url("' + config.urlPath + '#' + d.marker + '")' : '';
+          'url("' + this.urlPath + '#' + d.marker + '")' : '';
         }
     });
   }
@@ -462,7 +497,7 @@ export class Renderer {
   * Render a label in the middle of the line to indicate the type
   */
   renderReactionLabels(labels, legend) {
-    var size = 7, svg = this.svg, config = this.config;
+    var size = 7, svg = this.svg, colors = this.colors;
     var circular = ['Association','Dissociation','Binding'];
     var filled = ['Association','Binding'];
 
@@ -474,7 +509,7 @@ export class Renderer {
         'y1':function(d) {return d.y;},
         'x2':function(d) {return (+d.x)+30;},
         'y2':function(d) {return d.y;},
-        'stroke':config.strokeColor
+        'stroke':colors.stroke
       });
     }
 
@@ -487,8 +522,8 @@ export class Renderer {
         'ry':function(d) {return _.contains(circular,d.reactionType)?(size/2):'';},
         'width':size,
         'height':size,
-        'stroke':config.strokeColor
-      }).style('fill',function(d) {return _.contains(filled,d.reactionType)?config.strokeColor:'white';})
+        'stroke':colors.stroke
+      }).style('fill',function(d) {return _.contains(filled,d.reactionType)?colors.stroke:'white';})
       .on('mouseover',function(d) {
         console.log(d.description);
       });
@@ -500,7 +535,7 @@ export class Renderer {
         'y':function(d) {return +d.y + (size/4);},
         'font-weight':'bold',
         'font-size':'8px',
-        'fill':config.strokeColor
+        'fill':colors.stroke
       }).text(function(d) {
         if (d.reactionType === 'Omitted Process') {
           return '\\\\';
@@ -533,13 +568,13 @@ export class Renderer {
       type: 'mutation',
       nodeValues: _getNodeValues(mutationHighlights), 
       location: 'right', 
-      color: config.mutationHighlightColor
+      color: config.colors.mutationHighlightColor
     });
     _drawAnnotations({
       type: 'drug', 
       nodeValues: _getNodeValues(drugHighlights),
       location: 'left', 
-      color: config.drugHighlightColor
+      color: config.colors.drugHighlightColor
     });
 
     var link = (typeof config.urlPath === 'undefined') ? '' : 'url(\'' + config.urlPath + '#blur\')';
@@ -551,7 +586,7 @@ export class Renderer {
 
         var svgNode = svg.selectAll('.entity'+node.id);
         svgNode.style({
-          'stroke': config.overlapColor,
+          'stroke': config.overlap,
           'stroke-width': '5px'
         })
         .attr('filter', link ?  link : '')
