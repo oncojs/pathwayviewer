@@ -19,7 +19,7 @@
 
 import _ from 'lodash';
 
-export class RendererUtils {
+export default class RendererUtils {
   /*
   * Create an array of reaction labels for every reaction based on its type
   */

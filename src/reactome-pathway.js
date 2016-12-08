@@ -15,14 +15,14 @@
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {PathwayModel} from './model.js';
-import {Renderer} from './renderer.js';
-import {RendererUtils} from './renderer-utils.js';
+import PathwayModel from './model.js';
+import Renderer from './renderer.js';
+import RendererUtils from './renderer-utils.js';
 import d3 from 'd3';
 import invariant from 'invariant';
 import _ from 'lodash';
 
-export class ReactomePathway {
+export default class ReactomePathway {
   constructor(config) {
     var _defaultConfig = {
       width: 500,
@@ -206,14 +206,13 @@ export class ReactomePathway {
   * Returns legend svg given a width and height
   *
   */
-  getLegendSVG(w,h) {
-    //d3.select('.pathway-legend-svg').remove();
+  getLegendSVGElement(width, height) {
+
     var config =  this.config;
     var rendererUtils = this.rendererUtils;
 
     var legendSvgElement = document.createElementNS(d3.ns.prefix.svg, 'svg'); 
     var legendSvg = d3.select(legendSvgElement)
-      //.attr('class','pathway-legend-svg')
       .attr('viewBox', '0 0 ' +w+ ' ' + h)
       .attr('preserveAspectRatio', 'xMidYMid')
       .append('g');

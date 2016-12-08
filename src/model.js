@@ -19,7 +19,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 import deepFreeze from 'deep-freeze';
 
-export class PathwayModel {
+export default class PathwayModel {
   constructor(xml) {
     this.nodes = [];
     this.reactions = [];

@@ -19,7 +19,7 @@
 import d3 from 'd3';
 import _ from 'lodash';
 
-export class Renderer {
+export default class Renderer {
   constructor(svg, config) {
     var defaultConfig = {
       onClick: _.noop,

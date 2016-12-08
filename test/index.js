@@ -1,5 +1,5 @@
-import {ReactomePathway} from '../src/reactome-pathway.js';
-import {PathwayModel} from '../src/model.js';
+import ReactomePathway from '../src/reactome-pathway.js';
+import PathwayModel from '../src/model.js';
 import d3 from 'd3';
 import insertCSS from 'insert-css';
 import CSS from '../src/style.scss';
@@ -32,9 +32,9 @@ function readTextFile(file)
                 };
                 var reactomePathway = new ReactomePathway(config);
                 reactomePathway.render([]);
-                //var legendSvg = reactomePathway.getLegend(370, 671);
-                //console.log(legendSvg);
-                //document.body.appendChild(legendSvg);
+                
+                var legendSvg = reactomePathway.getLegend(370, 671);
+                document.body.appendChild(legendSvg);
             }
         }
     };

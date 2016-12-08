@@ -1,7 +1,11 @@
 {
   "name": "@oncojs/pathwayviewer",
   "version": "0.1.0",
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "oncojs/pathwayviewer"
+  },
+  "description": "Component for visualization of Reactome pathways",
   "devDependencies": {
     "babel-cli": "^6.16.0",
     "babel-eslint": "7.0.0",
@@ -19,7 +23,7 @@
     "jquery": "2.1.2",
     "lodash": "^3.10.1"
   },
-  "main": "dist/pathwayviewer.js",
+  "main": "dist/reactome-pathway.js",
   "scripts": {
     "build": "npm run build:scripts && npm run build:styles",
     "build:scripts": "babel src --out-dir dist",
