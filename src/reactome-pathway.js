@@ -22,7 +22,7 @@ import d3 from 'd3';
 import invariant from 'invariant';
 import _ from 'lodash';
 
-export default class ReactomePathway {
+export class ReactomePathway {
   constructor(config) {
     var _defaultConfig = {
       width: 500,

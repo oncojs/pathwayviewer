@@ -1,5 +1,5 @@
-import ReactomePathway from '../src/reactome-pathway.js';
-import PathwayModel from '../src/model.js';
+import {ReactomePathway, PathwayModel} from '../src';
+
 import d3 from 'd3';
 import insertCSS from 'insert-css';
 import CSS from '../src/style.scss';
