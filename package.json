@@ -23,7 +23,7 @@
     "jquery": "2.1.2",
     "lodash": "^3.10.1"
   },
-  "main": "dist/reactome-pathway.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "npm run build:scripts && npm run build:styles",
     "build:scripts": "babel src --out-dir dist",

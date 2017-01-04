@@ -43,7 +43,7 @@ export class ReactomePathway {
     this.containerNode = config.containerNode;
     invariant(this.containerNode, "'containerNode' (a DOM node object) is required");
     this.model = config.model;
-    invariant(this.model, "'model' (a PathwayModel object is required");
+    invariant(this.model, "'model' (a PathwayModel object) is required");
     
     this.rendererUtils = new RendererUtils();
   }
