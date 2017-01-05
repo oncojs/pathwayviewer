@@ -56,7 +56,6 @@ export class ReactomePathway {
   render(zoomedOnElements) {
     var config = this.config;
     var nodesInPathway = [];
-    
     var model = this.model;
     
     var getBoundingBox = function(nodes,box){
@@ -143,7 +142,8 @@ export class ReactomePathway {
 
     // Render everything
     this.renderer = new Renderer(svg, {
-      onClick: function (d) {     
+      onClick: function (d) {
+        d.isPartOfPathway = (nodesInPathway.length == 0 || nodesInPathway.indexOf(d.reactomeId) >= 0);
         config.onNodeClick(d3.event, d, this);
       },
       colors: config.colors,
