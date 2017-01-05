@@ -444,7 +444,6 @@ export default class Renderer {
           modelObjectToSVG.set(d, this);
         }
       );
-      console.log(this.modelObjectToSVG);
   }
 
   /*
@@ -568,13 +567,13 @@ export default class Renderer {
       type: 'mutation',
       nodeValues: _getNodeValues(mutationHighlights), 
       location: 'right', 
-      color: config.colors.mutationHighlightColor
+      color: config.colors.mutationHighlight
     });
     _drawAnnotations({
       type: 'drug', 
       nodeValues: _getNodeValues(drugHighlights),
       location: 'left', 
-      color: config.colors.drugHighlightColor
+      color: config.colors.drugHighlight
     });
 
     var link = (typeof config.urlPath === 'undefined') ? '' : 'url(\'' + config.urlPath + '#blur\')';
