@@ -25,7 +25,9 @@ export class PathwayModel {
     this.reactions = [];
     this.inks = [];
 
-    this.parse(xml);
+    if (xml) {
+      this.parse(xml);
+    }
     //deepFreeze(this);
   }
   
