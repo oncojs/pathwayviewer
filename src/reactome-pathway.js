@@ -27,14 +27,14 @@ export class ReactomePathway {
     var _defaultConfig = {
       width: 500,
       height: 500,
-      onNodeClick: _.noop,
-      colors: {  
-        stroke: 'black',
-        mutationHighlight: '#9b315b',
-        drugHighlight: 'navy',
-        overlap: '#000000',
-        subPathway: 'blue',
+      colors: {
+        stroke: _.noop,
+        overlap: _.noop,
+        mutationHighlight: _.noop,
+        drugHighlight: _.noop,
+        subPathway: _.noop
       },
+      onNodeClick: _.noop,
       initScaleFactor: 0.90,
     };
 
@@ -50,7 +50,7 @@ export class ReactomePathway {
   
   /*
   * Takes an optional list of reactions to zoom in * on and highlight.
-  * The color of the reactions is set with config.subPathwayColor
+  * The color of the reactions is set with config.colors.subColor
   *
   */
   render(zoomedOnElements) {
@@ -207,7 +207,6 @@ export class ReactomePathway {
   *
   */
   getLegendSVGElement(width, height) {
-
     var config =  this.config;
     var rendererUtils = this.rendererUtils;
 
@@ -219,11 +218,8 @@ export class ReactomePathway {
 
     var legendRenderer = new Renderer(legendSvg, {
       onClick: function(){},
+      colors: config.colors,
       urlPath: config.urlPath,
-      strokeColor: config.strokeColor,
-      mutationHighlightColor: config.mutationHighlightColor,
-      drugHighlightColor: config.drugHighlightColor,
-      overlapColor: config.overlapColor
     });
 
     var nodes = rendererUtils.getLegendNodes(20,0,legendSvg);
