@@ -36,6 +36,7 @@ export class Renderer {
     this.svg = svg;
     this.config = _.defaultsDeep({}, config, defaultConfig);
     this.colors = this.config.colors;
+    console.log(this.config);
     this.urlPath = this.config.urlPath;
     
     this.modelObjectToSVG = new WeakMap();

@@ -15,8 +15,8 @@
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import PathwayModel from './model.js';
-import Renderer from './renderer.js';
+import {PathwayModel} from './model.js';
+import {Renderer} from './renderer.js';
 import RendererUtils from './renderer-utils.js';
 import d3 from 'd3';
 import invariant from 'invariant';
@@ -27,13 +27,7 @@ export class ReactomePathway {
     var _defaultConfig = {
       width: 500,
       height: 500,
-      colors: {
-        stroke: _.noop,
-        overlap: _.noop,
-        mutationHighlight: _.noop,
-        drugHighlight: _.noop,
-        subPathway: _.noop
-      },
+      colors:{},
       onNodeClick: _.noop,
       initScaleFactor: 0.90,
     };
@@ -212,7 +206,7 @@ export class ReactomePathway {
 
     var legendSvgElement = document.createElementNS(d3.ns.prefix.svg, 'svg'); 
     var legendSvg = d3.select(legendSvgElement)
-      .attr('viewBox', '0 0 ' +w+ ' ' + h)
+      .attr('viewBox', '0 0 ' + width + ' ' + height)
       .attr('preserveAspectRatio', 'xMidYMid')
       .append('g');
 
@@ -225,8 +219,8 @@ export class ReactomePathway {
     var nodes = rendererUtils.getLegendNodes(20,0,legendSvg);
 
     legendRenderer.renderNodes(nodes);
-    legendRenderer.renderEdges(rendererUtils.getLegendLines(40,Math.ceil(h*0.50),legendSvg));
-    legendRenderer.renderReactionLabels(rendererUtils.getLegendLabels(35,Math.ceil(h*0.72),legendSvg),true);
+    legendRenderer.renderEdges(rendererUtils.getLegendLines(40,Math.ceil(height*0.50),legendSvg));
+    legendRenderer.renderReactionLabels(rendererUtils.getLegendLabels(35,Math.ceil(height*0.72),legendSvg),true);
     
     var model = new PathwayModel();
     model.nodes = _.takeRight(nodes,3);
