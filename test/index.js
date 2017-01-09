@@ -33,7 +33,7 @@ function readTextFile(file)
                 var reactomePathway = new ReactomePathway(config);
                 reactomePathway.render([]);
                 
-                var legendSvg = reactomePathway.getLegend(370, 671);
+                var legendSvg = reactomePathway.getLegendSVGElement(370, 671);
                 document.body.appendChild(legendSvg);
             }
         }
