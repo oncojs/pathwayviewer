@@ -27,8 +27,8 @@ export class Renderer {
         stroke: '#696969',
         mutationHighlight: '#9b315b',
         drugHighlight: 'navy',
-        overlap : '#000000',
-        subPathway: 'blue',
+        overlap : '#ff9900',
+        subPathway: 'navy',
       },
       urlPath: '',
     };
