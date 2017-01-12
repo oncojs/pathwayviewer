@@ -238,7 +238,6 @@ export class Renderer {
   */
   renderNodes(nodes) {
     var svg = this.svg;
-    var config = this.config;
     // Split into normal rectangles and octagons based on node type
     var octs = _.filter(nodes,function(n) {return n.type === 'RenderableComplex';});
     var rects = _.filter(nodes,function(n) {return n.type !== 'RenderableComplex';});
