@@ -174,7 +174,7 @@ export class Renderer {
         .style('fill',filled(elem)?color:'white');
 
       if(isBaseMarker(elem)){
-        color = colors.subPathwayColor;
+        color = colors.subPathway;
 
         defs.append('svg:marker')
           .attr({
@@ -238,6 +238,7 @@ export class Renderer {
   */
   renderNodes(nodes) {
     var svg = this.svg;
+    var config = this.config;
     // Split into normal rectangles and octagons based on node type
     var octs = _.filter(nodes,function(n) {return n.type === 'RenderableComplex';});
     var rects = _.filter(nodes,function(n) {return n.type !== 'RenderableComplex';});
@@ -585,7 +586,7 @@ export class Renderer {
 
         var svgNode = svg.selectAll('.entity'+node.id);
         svgNode.style({
-          'stroke': config.overlap,
+          'stroke': config.colors.overlap,
           'stroke-width': '5px'
         })
         .attr('filter', link ?  link : '')
@@ -700,7 +701,7 @@ export class Renderer {
 
   outlineSubPathway(svg, reactomeId) {
     svg.selectAll('.reaction'+reactomeId)
-      .attr('stroke',this.config.subPathwayColor)
+      .attr('stroke',this.colors.subPathway)
       .classed('pathway-sub-reaction-line',true);
   }
 }
