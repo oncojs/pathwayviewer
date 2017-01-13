@@ -481,11 +481,11 @@ export class Renderer {
       'y2':function(d) {return d.y2;},
       'stroke': colors.stroke
     }).attr({
-        'marker-start':function(d) {
+        'marker-start': (d) => {
           return d.marked && isStartMarker(d.marker) && !isLink(d.type)?
           'url("' + this.urlPath + '#' + d.marker + '")' : '';
         },
-        'marker-end':function(d) {
+        'marker-end': (d) => {
           return d.marked && !isStartMarker(d.marker) && !isLink(d.type)?
           'url("' + this.urlPath + '#' + d.marker + '")' : '';
         }
