@@ -50,16 +50,16 @@ export class Renderer {
     ];
     
     var isBaseMarker = function(type){
-      return _.contains(['Output','Activator','Catalyst','Inhibitor'], type); // Part of subpathway reactions
+      return _.includes(['Output','Activator','Catalyst','Inhibitor'], type); // Part of subpathway reactions
     };
     
     var filled = function(type){
-      return _.contains(['Output','RenderableInteraction','Output-legend','GeneArrow'], type);
+      return _.includes(['Output','RenderableInteraction','Output-legend','GeneArrow'], type);
     };
     
-    var isCircular = function(type){return _.contains(['Catalyst','Catalyst-legend'], type);};
-    var shifted = function(type){return _.contains(['Catalyst','Activator'], type);};
-    var isLinear = function(type){return _.contains(['Inhibitor','Inhibitor-legend'], type);};
+    var isCircular = function(type){return _.includes(['Catalyst','Catalyst-legend'], type);};
+    var shifted = function(type){return _.includes(['Catalyst','Activator'], type);};
+    var isLinear = function(type){return _.includes(['Inhibitor','Inhibitor-legend'], type);};
 
     var circle = {
       'element':'circle',
@@ -427,7 +427,7 @@ export class Renderer {
       );
 
       // if it's a gene, we have to add a special array in the top right corner
-      var genes =  _.where(nodes,{type : 'RenderableGene'});
+      var genes =  _.filter(nodes,{type : 'RenderableGene'});
 
       svg.selectAll('.RenderableGeneArrow').data(genes).enter().append('line').attr({
         'class':'node RenderableGeneArrow',
@@ -457,8 +457,8 @@ export class Renderer {
     // edges with markers (arrow heads, etc.) are on top.
     edges = _.sortBy(edges, function(n) {return n.marked?1:0;});
 
-    var isStartMarker = function(type) {return _.contains(['FlowLine','RenderableInteraction'],type);};
-    var isLink = function(type) { return _.contains(['EntitySetAndMemberLink', 'EntitySetAndEntitySetLink'],type);};
+    var isStartMarker = function(type) {return _.includes(['FlowLine','RenderableInteraction'],type);};
+    var isLink = function(type) { return _.includes(['EntitySetAndMemberLink', 'EntitySetAndEntitySetLink'],type);};
 
     svg.selectAll('line').data(edges).enter().append('line').attr({
       'class':function(d) {
@@ -517,12 +517,12 @@ export class Renderer {
         'class':function(d) {return 'RenderableReactionLabel reaction'+d.id;},
         'x':function(d) {return +d.x - (size/2);},
         'y':function(d) {return +d.y - (size/2);},
-        'rx':function(d) {return _.contains(circular,d.reactionType)?(size/2):'';},
-        'ry':function(d) {return _.contains(circular,d.reactionType)?(size/2):'';},
+        'rx':function(d) {return _.includes(circular,d.reactionType)?(size/2):'';},
+        'ry':function(d) {return _.includes(circular,d.reactionType)?(size/2):'';},
         'width':size,
         'height':size,
         'stroke':colors.stroke
-      }).style('fill',function(d) {return _.contains(filled,d.reactionType)?colors.stroke:'white';})
+      }).style('fill',function(d) {return _.includes(filled,d.reactionType)?colors.stroke:'white';})
       .on('mouseover',function(d) {
         console.log(d.description);
       });

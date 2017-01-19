@@ -55,7 +55,7 @@ export default class RendererUtils {
 
     // Make sure arrow heads aren't added to special dashed lines
     var isArrowHeadLine = function(type) {
-      return !_.contains(['entitysetandmemberlink','entitysetandentitysetlink','missing'],type);
+      return !_.includes(['entitysetandmemberlink','entitysetandentitysetlink','missing'],type);
     };
 
     // Adds a line to the lines array gives an array of points and description of the line
@@ -147,8 +147,8 @@ export default class RendererUtils {
         addedTypes.push(getNodeLines(reaction, node, id, reaction.class, reaction.failedReaction));
       });
 
-      var hasInputs = _.contains(addedTypes,'Input');
-      var hasOutputs =  _.contains(addedTypes,'Output');
+      var hasInputs = _.includes(addedTypes,'Input');
+      var hasOutputs =  _.includes(addedTypes,'Output');
 
       // If it doesn't have human-curated input lines, "snap" line to first input node, if it has one
       if (!hasInputs && getFirstInputNode(reaction.nodes)) {

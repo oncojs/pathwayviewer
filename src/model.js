@@ -180,7 +180,7 @@ export class PathwayModel {
   }
   
   getNodesByReactomeId(reactomeId) {
-    return _.where(this.nodes, {reactomeId: reactomeId});
+    return _.filter(this.nodes, {reactomeId: reactomeId});
   }
 
   getNodes() {
