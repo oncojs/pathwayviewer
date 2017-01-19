@@ -205,6 +205,6 @@ export class PathwayModel {
   }
   
   getNodesInReaction(reaction){
-    return _.map(reaction.nodes, function(node){ return this.getNodeById(node.id);}, this);
+    return _.map(reaction.nodes, (node) => { return this.getNodeById(node.id);}, this);
   }
 }
