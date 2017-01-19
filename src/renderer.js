@@ -286,7 +286,7 @@ export class Renderer {
     svg.selectAll('.RenderableOct').data(octs).enter().append('polygon')
       .attr({
         'class': function(d) {return 'node pathway-node RenderableOct RenderableComplex entity'+d.id;},
-        'filter': function(d) {
+        'filter': (d) => {
           if (d.grayed) {
             return (typeof this.urlPath==='undefined') ? '' : 'url(\''+ this.urlPath+'#grayscale\')';
           } else {
@@ -316,7 +316,7 @@ export class Renderer {
     svg.selectAll('.RenderableRect').data(rects).enter().append('rect')
       .attr({
         'class': function (d) {return 'node pathway-node RenderableRect ' + d.type + ' entity'+d.id;},
-        'filter': function (d) {
+        'filter': (d) => {
           if (d.grayed) {
             return (typeof this.urlPath==='undefined') ? '' : 'url(\''+this.urlPath+'#grayscale\')';
           } else {
@@ -468,7 +468,7 @@ export class Renderer {
         }
         return classes;
       },
-      'filter': function(d) {
+      'filter': (d) => {
         if (d.grayed || d.overlapping) {
           return (typeof this.urlPath==='undefined') ? '' : 'url(\''+ this.urlPath+'#grayscale\')';
         } else {
