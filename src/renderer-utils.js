@@ -272,7 +272,7 @@ export default class RendererUtils {
       svg.append('foreignObject').attr({
         x: marginLeft+100,
         y: y - 15,
-        width:200,
+        width:100,
         height:35,
         'fill':'none'
       }).append('xhtml:body')
@@ -286,7 +286,7 @@ export default class RendererUtils {
       svg.append('foreignObject').attr({
         x: 5,
         y: y - 22,
-        width:350,
+        width:275,
         height:35,
         'fill':'none'
       }).append('xhtml:body')
@@ -325,7 +325,7 @@ export default class RendererUtils {
       svg.append('foreignObject').attr({
         x: marginLeft + 80,
         y: y - 15,
-          width:205,
+          width:105,
           height:30,
           'fill':'none'
       }).append('xhtml:body')
@@ -353,7 +353,7 @@ export default class RendererUtils {
       svg.append('foreignObject').attr({
         x: marginLeft+80,
         y: y - 15,
-        width: 160,
+        width: 110,
         height: 30,
         'fill':'none'
       }).append('xhtml:body')
