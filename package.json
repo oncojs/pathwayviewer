@@ -11,17 +11,21 @@
     "babel-eslint": "7.0.0",
     "babel-preset-es2015": "^6.16.0",
     "babelify": "^7.3.0",
+    "budo": "^9.2.1",
     "d3": "3",
     "eslint": "3.8.1",
     "insert-css": "^2.0.0",
+    "jquery": "3",
+    "lodash": "^4.17.4",
     "node-sass": "^3.13.0",
     "sassify": "^2.0.0"
   },
+  "peerDependencies": {
+    "d3": "3",
+    "jquery": "3"
+  },
   "dependencies": {
-    "budo": "^9.2.1",
-    "deep-freeze": "0.0.1",
-    "jquery": "2.1.2",
-    "lodash": "4.17.2"
+    "deep-freeze": "0.0.1"
   },
   "main": "dist/index.js",
   "scripts": {
@@ -30,8 +34,5 @@
     "build:styles": "node-sass src/style.scss dist/style.css",
     "prepublish": "npm run build",
     "dev": "budo test/index.js --live --open -- -t [ sassify --autoInject=true ] -t babelify"
-  },
-  "peerDependencies": {
-    "d3": "3"
   }
 }
